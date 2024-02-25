@@ -7,9 +7,9 @@ namespace WinFlipped
 {
     public partial class MainWindow : Window
     {
-        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        private void MainWindow_KeyUp(object sender, KeyEventArgs eventArgs)
         {
-            if (e.Key == Key.Tab && OpenWindows is not null)
+            if (eventArgs.Key == Key.Tab && OpenWindows is not null)
             {
                 // Cycle through windows
                 // Add hidden window
@@ -54,7 +54,7 @@ namespace WinFlipped
 
                 OpenWindows = OpenWindows.Prepend(OpenWindows.Last()).SkipLast(1);
             }
-            else if (e.Key == Key.Enter)
+            else if (eventArgs.Key == Key.Enter)
             {
                 // Show selected window, and quit program
                 Application.Current.Shutdown();

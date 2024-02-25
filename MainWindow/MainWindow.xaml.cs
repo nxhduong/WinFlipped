@@ -1,13 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Diagnostics;
 
 namespace WinFlipped
 {
     public partial class MainWindow : Window
     {
-        private IEnumerable<Process>? OpenWindows; // SortedDictionary?
+        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows; // SortedDictionary?
         // Rough approximation of maximum number of windows that this program can show
         private readonly int WINDOWS_SHOW_LIMIT = (int)Math.Min(
                 SystemParameters.FullPrimaryScreenHeight / 100,
