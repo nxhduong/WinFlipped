@@ -14,24 +14,27 @@ namespace WinFlipped.Helpers
         private static partial nint GetDesktopWindow();
         [LibraryImport("user32.dll")]
         private static partial nint GetWindowRect(nint hWnd, ref RECT rect);
-        [DllImport("gdi32.dll")]
-        static extern bool BitBlt(nint hdcDest, int xDest, int yDest, int wDest, int hDest, nint hdcSource, int xSrc, int ySrc, CopyPixelOperation rop);
-        [DllImport("user32.dll")]
-        static extern bool ReleaseDC(nint hWnd, nint hDc);
+        [LibraryImport("gdi32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool BitBlt(nint hdcDest, int xDest, int yDest, int wDest, int hDest, nint hdcSource, int xSrc, int ySrc, CopyPixelOperation rop);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool ReleaseDC(nint hWnd, nint hDc);
         [LibraryImport("gdi32.dll")]
         private static partial nint DeleteDC(nint hDc);
         [LibraryImport("gdi32.dll")]
         private static partial nint DeleteObject(nint hDc);
-        [DllImport("gdi32.dll")]
-        static extern nint CreateCompatibleBitmap(nint hdc, int nWidth, int nHeight);
+        [LibraryImport("gdi32.dll")]
+        private static partial nint CreateCompatibleBitmap(nint hdc, int nWidth, int nHeight);
         [LibraryImport("gdi32.dll")]
         private static partial nint CreateCompatibleDC(nint hdc);
         [LibraryImport("gdi32.dll")]
         private static partial nint SelectObject(nint hdc, nint bmp);
         [LibraryImport("user32.dll")]
         private static partial nint GetWindowDC(nint ptr);
-        [DllImport("user32.dll")]
-        public static extern bool PrintWindow(nint hWnd, nint hdcBlt, int nFlags);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool PrintWindow(nint hWnd, nint hdcBlt, int nFlags);
 
         public static Bitmap CaptureScreen()
         {

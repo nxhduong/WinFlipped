@@ -11,7 +11,7 @@ This is a WPF program, running on .NET 8.0.
 This project is currently a WIP.
 # Usage
 - Tools (e.g. AutoHotKey) can be used to assign a key combination to launch this program
-- Press `TAB` to "flip" through windows, and `ENTER` to switch to the selected one.
+- Press `TAB` to cycle through windows, and `ENTER` to switch to the selected one.
 # Contributing to this project
 Suggestions are greatly appreciated.
 # License
