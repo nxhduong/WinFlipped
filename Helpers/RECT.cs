@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace Bookflipper.Helpers
+namespace WinFlipped.Helpers
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT(int Left, int Top, int Right, int Bottom)

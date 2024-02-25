@@ -6,20 +6,28 @@ using System.Windows.Media;
 using System.Windows.Interop;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
-using Bookflipper.Helpers;
+using WinFlipped.Helpers;
 
-namespace Bookflipper
+namespace WinFlipped
 {
     public partial class MainWindow : Window
     {
-        private Dictionary<nint, string>? VisibleWindows;
-        private nint? SelectedWindow;
+        
+        private IEnumerable<Process>? OpenWindows; // SortedDictionary ?
+        private int SelectedWindowIndex = 0;
 
         [LibraryImport("user32.dll")]
         private static partial nint ShowWindow(nint hWnd, int nCmdShow);
-
-        [LibraryImport("user32.dll", SetLastError = true)]
-        private static partial uint GetWindowThreadProcessId(nint hWnd, out uint pdwProcessId);
+        [LibraryImport("user32.dll")]
+        private static partial nint SwitchToThisWindow(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool fUnknown);
+        [LibraryImport("user32.dll")]
+        private static partial nint SetForegroundWindow(nint hWnd);
+        [LibraryImport("user32.dll")]
+        private static partial nint SetWindowPos(nint hWnd, nint hWndInsertAfter, int x, int y, int cX, int cY, uint uFlags);
+        [LibraryImport("user32.dll")]
+        private static partial nint BringWindowToTop(nint hWnd);
+        [LibraryImport("user32.dll")]
+        private static partial nint IsIconic(nint hWnd);
 
         public MainWindow()
         {
@@ -31,38 +39,39 @@ namespace Bookflipper
         {
             if (e.Key == Key.Tab) 
             {
-                if (VisibleWindows is null)
+                if (OpenWindows is null)
                 {
                     var imageTop = 100;
                     var imageLeft = 100;
+                    OpenWindows = Process.GetProcesses().Where(p => !string.IsNullOrEmpty(p.MainWindowTitle)
+                    && new WindowInteropHelper(this).Handle != p.MainWindowHandle);
 
                     canvas.Children.Clear();
                     Hide();
 
-                    foreach (KeyValuePair<nint, string> window in OpenWindowGetter.GetOpenWindows())
+                    foreach (Process window in OpenWindows)
                     {
-                        // Ignore self window
-                        if (new WindowInteropHelper(this).Handle == window.Key)
-                        {
-                            continue;
-                        }
-
-                        // Get window representation by screen grabbing
-                        ShowWindow(window.Key, 1);
-                        GetWindowThreadProcessId(window.Key, out uint process);
+                        // Get window representation by taking screenshot
+                        // Redundancy to ensure that the window is shown
+                        ShowWindow(window.MainWindowHandle, IsIconic(window.MainWindowHandle) != 0? 9 : 5);
+                        _ = SetForegroundWindow(window.MainWindowHandle);
+                        _ = SetWindowPos(window.MainWindowHandle, -1, 0, 0, 0, 0, 0x0040 | 0x0001 | 0x0002);
+                        BringWindowToTop(window.MainWindowHandle);
+                        SwitchToThisWindow(window.MainWindowHandle, true);
 
                         Label title = new()
                         {
                             // Window handles are for debugging purposes
-                            Content = window.Value + ' ' + window.Key,
-                            Foreground = new BrushConverter().ConvertFromString("#ffffff") as Brush
+                            Content = window.MainWindowTitle + ' ' + window.MainWindowHandle,
+                            Name = '_' + window.MainWindowHandle.ToString(),
+                            Foreground = new BrushConverter().ConvertFromString("#ffffff") as Brush,
                         };
 
                         Image image = new()
                         {
                             Height = 100,
                             Width = 200,
-                            Source = BitmapManipulator.SkewBitmap(ScreenGrabber.CaptureActiveWindow()).ToBitmapImage()
+                            Source = ScreenGrabber.CaptureWindow(window.MainWindowHandle).ToBitmapImage()
                         };
 
                         Image icon = new()
@@ -70,22 +79,21 @@ namespace Bookflipper
                             Height = 50,
                             Width = 50,
                             Source = Imaging.CreateBitmapSourceFromHIcon(
-                                System.Drawing.Icon.ExtractAssociatedIcon(
-                                    Process.GetProcessById((int)process).MainModule?.FileName ?? "")?.Handle ?? 0,
+                                System.Drawing.Icon.ExtractAssociatedIcon(window.MainModule?.FileName ?? "")?.Handle ?? 0,
                                 Int32Rect.Empty,
                                 BitmapSizeOptions.FromEmptyOptions()
                                 )
                         };
 
                         // Minimize window
-                        ShowWindow(window.Key, 2);
+                        ShowWindow(window.MainWindowHandle, 2);
 
                         canvas.Children.Add(image);
                         Canvas.SetTop(image, imageTop);
                         Canvas.SetLeft(image, imageLeft);
 
                         canvas.Children.Add(icon);
-                        Canvas.SetTop(icon, imageTop);
+                        Canvas.SetTop(icon, imageTop - 10);
                         Canvas.SetLeft(icon, imageLeft);
 
                         canvas.Children.Add(title);
@@ -100,16 +108,30 @@ namespace Bookflipper
                 } 
                 else
                 {
-                    // TODO: switch selected window
+                    if (SelectedWindowIndex < OpenWindows.Count() - 1)
+                    {
+                        SelectedWindowIndex++;
+                    }
+                    else
+                    {
+                        SelectedWindowIndex = 0;
+                    }
+
+                    // Bold the label of selected window
+                    // Todo: animation
+                    canvas
+                        .Children.OfType<Label>()
+                        .Where((control) => control.Name == '_' + OpenWindows.ElementAt(SelectedWindowIndex).MainWindowHandle.ToString())
+                        .First().FontWeight = FontWeights.ExtraBlack;
                 }
             } 
             else if (e.Key == Key.Enter)
             {
                 // Show selected window
                 Hide();
-                ShowWindow(SelectedWindow ?? 0, 1);
-                VisibleWindows = null;
-                SelectedWindow = null;
+                ShowWindow(OpenWindows?.ElementAt(SelectedWindowIndex).MainWindowHandle ?? 0, 1);
+                OpenWindows = null;
+                SelectedWindowIndex = 0;
             }
         }
     }

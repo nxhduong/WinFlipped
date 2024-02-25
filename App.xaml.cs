@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Bookflipper
+namespace WinFlipped
 {
     /// <summary>
     /// Interaction logic for App.xaml

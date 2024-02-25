@@ -1,16 +1,18 @@
-﻿<Window x:Class="Bookflipper.MainWindow"
+﻿<Window x:Class="WinFlipped.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Bookflipper"
+        xmlns:local="clr-namespace:WinFlipped"
         mc:Ignorable="d"
         WindowStyle="None"
         WindowState="Maximized"
         AllowsTransparency="True"
-        Title="MainWindow" Height="auto" Width="auto">
+        Title="MainWindow" 
+        Height="auto" 
+        Width="auto">
     <Window.Background>
-        <SolidColorBrush Opacity="0" Color="White"></SolidColorBrush>
+        <SolidColorBrush Opacity="0.25" Color="Black"></SolidColorBrush>
     </Window.Background>
     <Canvas x:Name="canvas">
         
