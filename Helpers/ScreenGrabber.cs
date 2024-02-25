@@ -16,7 +16,7 @@ namespace WinFlipped.Helpers
         private static partial nint GetWindowRect(nint hWnd, ref RECT rect);
         [LibraryImport("gdi32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool BitBlt(nint hdcDest, int xDest, int yDest, int wDest, int hDest, nint hdcSource, int xSrc, int ySrc, CopyPixelOperation rop);
+        private static partial bool BitBlt(nint hDcDest, int xDest, int yDest, int wDest, int hDest, nint hDcSource, int xSrc, int ySrc, CopyPixelOperation rop);
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool ReleaseDC(nint hWnd, nint hDc);
@@ -25,16 +25,16 @@ namespace WinFlipped.Helpers
         [LibraryImport("gdi32.dll")]
         private static partial nint DeleteObject(nint hDc);
         [LibraryImport("gdi32.dll")]
-        private static partial nint CreateCompatibleBitmap(nint hdc, int nWidth, int nHeight);
+        private static partial nint CreateCompatibleBitmap(nint hDc, int nWidth, int nHeight);
         [LibraryImport("gdi32.dll")]
-        private static partial nint CreateCompatibleDC(nint hdc);
+        private static partial nint CreateCompatibleDC(nint hDc);
         [LibraryImport("gdi32.dll")]
-        private static partial nint SelectObject(nint hdc, nint bmp);
+        private static partial nint SelectObject(nint hDc, nint bmp);
         [LibraryImport("user32.dll")]
         private static partial nint GetWindowDC(nint ptr);
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool PrintWindow(nint hWnd, nint hdcBlt, int nFlags);
+        public static partial bool PrintWindow(nint hWnd, nint hDcBlt, int nFlags);
 
         public static Bitmap CaptureScreen()
         {
@@ -74,7 +74,7 @@ namespace WinFlipped.Helpers
             return [rect.Right - rect.Left, rect.Bottom - rect.Top];
         }
 
-        public static Bitmap BitBltCaptureWindow(nint hwnd)
+        public static Bitmap BitBltCaptureWindow(nint hWnd)
         {
             Size sz = new((int)PrimaryScreenWidth, (int)PrimaryScreenHeight);
             nint hDesk = GetDesktopWindow();
@@ -91,18 +91,18 @@ namespace WinFlipped.Helpers
             return bmp;
         }
 
-        public static Bitmap PrintWindow(nint hwnd)
+        public static Bitmap PrintWindow(nint hWnd)
         {
             RECT rc = new();
-            GetWindowRect(hwnd, ref rc);
+            GetWindowRect(hWnd, ref rc);
 
             Bitmap bmp = new(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
             Graphics gfxBmp = Graphics.FromImage(bmp);
-            nint hdcBitmap = gfxBmp.GetHdc();
+            nint hDcBitmap = gfxBmp.GetHdc();
 
-            PrintWindow(hwnd, hdcBitmap, 2);
+            PrintWindow(hWnd, hDcBitmap, 2);
 
-            gfxBmp.ReleaseHdc(hdcBitmap);
+            gfxBmp.ReleaseHdc(hDcBitmap);
             gfxBmp.Dispose();
 
             return bmp;
