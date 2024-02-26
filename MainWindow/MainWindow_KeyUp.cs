@@ -11,11 +11,11 @@ namespace WinFlipped
     {
         private void MainWindow_KeyUp(object sender, KeyEventArgs eventArgs)
         {
-            if (eventArgs.Key == Key.Tab && OpenWindows is not null)
+            if (eventArgs.Key == Key.Tab && OpenWindows is not null && !eventArgs.IsRepeat)
             {
                 // Cycle through windows
                 (nint handle, string title, Bitmap screenshot) hiddenWindow;
-
+                                                                    
                 if (OpenWindows.Count() < WINDOWS_SHOW_LIMIT)
                 {
                     hiddenWindow = OpenWindows.Last();
@@ -24,25 +24,6 @@ namespace WinFlipped
                 {
                     hiddenWindow = OpenWindows.SkipLast(WINDOWS_SHOW_LIMIT).Last();
                 }
-
-                // Add hidden window
-                (Label title, Image screenshot, Image icon) = canvas.DrawWindow(hiddenWindow.handle, hiddenWindow.title, hiddenWindow.screenshot, 50, 50);
-
-                // Move animation
-                foreach (Label label in canvas.Children.OfType<Label>())
-                {
-                    label.MoveBy(50, 50);
-                }
-
-                foreach (Image image in canvas.Children.OfType<Image>())
-                {
-                    image.MoveBy(50, 50);
-                }
-
-                // Fade in animation
-                title.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
-                screenshot.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
-                icon.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
 
                 // Fade out animation
                 var lastLabel = canvas
@@ -61,6 +42,25 @@ namespace WinFlipped
                     });
 
                 OpenWindows = OpenWindows.Prepend(OpenWindows.Last()).SkipLast(1);
+
+                // Move animation
+                foreach (Label label in canvas.Children.OfType<Label>())
+                {
+                    label.MoveBy(50, 50);
+                }
+
+                foreach (Image image in canvas.Children.OfType<Image>())
+                {
+                    image.MoveBy(50, 50);
+                }   
+
+                // Add hidden window
+                (Label title, Image screenshot, Image icon) = canvas.DrawWindow(hiddenWindow.handle, hiddenWindow.title, hiddenWindow.screenshot, 100, 100, hidden: true);
+
+                // Fade in animation
+                title.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
+                screenshot.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
+                icon.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
             }
             else if (eventArgs.Key == Key.Enter)
             {

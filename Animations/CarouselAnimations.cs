@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -23,7 +24,7 @@ namespace WinFlipped.Animations
 
     internal static class Transformations {
         /// <summary>
-        /// Translate (move) an element
+        /// Translate (move) an element. The element remains in new position.
         /// </summary>
         /// <typeparam name="T">Extends FrameworkElement (Label or Image)</typeparam>
         /// <param name="target">Element to be translated</param>
@@ -33,14 +34,18 @@ namespace WinFlipped.Animations
         {
             TranslateTransform trans = new();
             target.RenderTransform = trans;
+
             trans.BeginAnimation(
                 TranslateTransform.XProperty, 
-                new DoubleAnimation(target.Width, target.Width + hDist, TimeSpan.FromMilliseconds(500))
+                new DoubleAnimation(Canvas.GetLeft(target), Canvas.GetLeft(target) + hDist, TimeSpan.FromMilliseconds(500))
             );
             trans.BeginAnimation(
-                TranslateTransform.YProperty, 
-                new DoubleAnimation(target.Height, target.Height + vDist, TimeSpan.FromMilliseconds(500))
+                TranslateTransform.YProperty,   
+                new DoubleAnimation(Canvas.GetTop(target), Canvas.GetTop(target) + vDist, TimeSpan.FromMilliseconds(500))
             );
+
+            Canvas.SetLeft(target, Canvas.GetLeft(target) + hDist);
+            Canvas.SetTop(target, Canvas.GetTop(target) + vDist);
         }
     }
 }

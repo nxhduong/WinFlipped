@@ -17,7 +17,14 @@ namespace WinFlipped.Helpers
         /// <returns>
         /// A tuple containing 3 WPF elements: Label (title) and 2 x Image (screenshot, icon)
         /// </returns>
-        public static (Label, Image, Image) DrawWindow(this Canvas canvas, nint windowHandle, string windowTitle, Bitmap windowScreenshot, int top, int left)
+        public static (Label, Image, Image) DrawWindow(
+            this Canvas canvas, nint windowHandle, 
+            string windowTitle, 
+            Bitmap windowScreenshot, 
+            int top, 
+            int left, 
+            bool hidden = false
+        )
         {
             Label title = new()
             {
@@ -25,6 +32,7 @@ namespace WinFlipped.Helpers
                 Content = windowTitle + "|Handle " + windowHandle,
                 Name = '_' + windowHandle.ToString(),
                 Foreground = new BrushConverter().ConvertFromString("#FFFFFF") as Brush,
+                Opacity = hidden? 0 : 1
             };
 
             Image image = new()
@@ -32,7 +40,8 @@ namespace WinFlipped.Helpers
                 Height = 100,
                 Width = 200,
                 Name = "_" + windowHandle.ToString(),
-                Source = windowScreenshot.ToBitmapImage()
+                Source = windowScreenshot.ToBitmapImage(),
+                Opacity = hidden ? 0 : 1
             };
 
             Image icon = new()
@@ -40,6 +49,7 @@ namespace WinFlipped.Helpers
                 Height = 50,
                 Width = 50,
                 Name = "_" + windowHandle.ToString(),
+                Opacity = hidden ? 0 : 1
             };
 
             try
