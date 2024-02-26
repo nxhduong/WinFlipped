@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using WindowsDesktop;
@@ -32,16 +33,16 @@ namespace WinFlipped.Helpers
         private static partial nint GetShellWindow();
 
         [LibraryImport("dwmapi.dll")]
-        [Obsolete]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Currently not needed")]
         private static partial nint DwmGetWindowAttribute(nint hWnd, nint dwAttribute, out nint pvAttribute, nint cbAttribute);
 
-        /// <summary>Returns a dictionary that contains the handle and title of all the open windows.</summary>
-        /// <returns>A dictionary that contains the handle and title of all the open windows.</returns>
-        /// 
-        public static IEnumerable<(nint MainWindowHandle, string MainWindowTitle)> GetOpenWindows()
+        /// <summary>
+        /// Returns an IEnumerable that contains the handle, title and screenshots of all the open windows.
+        /// </summary>
+        public static IEnumerable<(nint MainWindowHandle, string MainWindowTitle, Bitmap screenshot)> GetOpenWindows()
         {
             nint shellWindow = GetShellWindow();
-            List<(nint, string)> windows = [];
+            List<(nint, string, Bitmap)> windows = [];
 
             EnumWindows(delegate (nint hWnd, int lParam)
             {
@@ -54,7 +55,7 @@ namespace WinFlipped.Helpers
                 StringBuilder builder = new(titleLength);
                 _ = GetWindowText(hWnd, builder, titleLength + 1);
 
-                windows.Add((hWnd, builder.ToString()));
+                windows.Add((hWnd, builder.ToString(), ScreenGrabber.CaptureWindow(hWnd)));
                 return true;
 
             }, 0);

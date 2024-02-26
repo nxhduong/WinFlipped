@@ -67,6 +67,11 @@ namespace WinFlipped.Helpers
             return CaptureWindow(GetForegroundWindow());
         }
 
+        /// <summary>
+        /// Take a screenshot of a window using the .CopyFromScreen() method
+        /// </summary>
+        /// <param name="handle">Handle of the window</param>
+        /// <returns>A bitmap of the screenshot</returns>
         public static Bitmap CaptureWindow(nint handle)
         {
             var rect = new RECT();
@@ -91,6 +96,12 @@ namespace WinFlipped.Helpers
             return [rect.Right - rect.Left, rect.Bottom - rect.Top];
         }
 
+        /// <summary>
+        /// Capture the screen using BitBlt()
+        /// </summary>
+        /// <returns>
+        /// A bitmap of the screenshot
+        /// </returns>
         public static Bitmap BitBltCaptureScreen()
         {
             Size sz = new((int)PrimaryScreenWidth, (int)PrimaryScreenHeight);
@@ -111,6 +122,11 @@ namespace WinFlipped.Helpers
             return bmp;
         }
 
+        /// <summary>
+        /// Take screenshot using PrintWindow() from the API
+        /// </summary>
+        /// <param name="hWnd">Handle of the window</param>
+        /// <returns>A bitmap of the screenshot</returns>
         public static Bitmap PrintWindow(nint hWnd)
         {
             RECT rc = new();

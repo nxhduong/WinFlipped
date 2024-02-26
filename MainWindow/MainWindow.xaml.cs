@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace WinFlipped
 {
@@ -11,7 +12,7 @@ namespace WinFlipped
             SystemParameters.FullPrimaryScreenHeight / 100,
             SystemParameters.FullPrimaryScreenWidth / 200
         );
-        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows;
+        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle, Bitmap MainWindowScreenshot)>? OpenWindows;
 
         [LibraryImport("user32.dll")]
         private static partial nint ShowWindow(nint hWnd, int nCmdShow);

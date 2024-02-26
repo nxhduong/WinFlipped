@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using WinFlipped.Animations;
+using WinFlipped.Helpers;
+using Bitmap = System.Drawing.Bitmap;
 
 namespace WinFlipped
 {
@@ -12,8 +14,19 @@ namespace WinFlipped
             if (eventArgs.Key == Key.Tab && OpenWindows is not null)
             {
                 // Cycle through windows
-                // Add hidden window
+                (nint handle, string title, Bitmap screenshot) hiddenWindow;
 
+                if (OpenWindows.Count() < WINDOWS_SHOW_LIMIT)
+                {
+                    hiddenWindow = OpenWindows.Last();
+                } 
+                else
+                {
+                    hiddenWindow = OpenWindows.SkipLast(WINDOWS_SHOW_LIMIT).Last();
+                }
+
+                // Add hidden window
+                (Label title, Image screenshot, Image icon) = canvas.DrawWindow(hiddenWindow.handle, hiddenWindow.title, hiddenWindow.screenshot, 50, 50);
 
                 // Move animation
                 foreach (Label label in canvas.Children.OfType<Label>())
@@ -27,14 +40,9 @@ namespace WinFlipped
                 }
 
                 // Fade in animation
-                canvas
-                    .Children.OfType<Label>()
-                    .Where((control) => control.Name == '_' + OpenWindows.First().MainWindowHandle.ToString())
-                    .First().BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
-                canvas
-                    .Children.OfType<Image>()
-                    .Where((control) => control.Name == '_' + OpenWindows.First().MainWindowHandle.ToString())
-                    .ToList().ForEach(i => i.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false)));
+                title.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
+                screenshot.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
+                icon.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
 
                 // Fade out animation
                 var lastLabel = canvas

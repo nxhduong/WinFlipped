@@ -30,9 +30,9 @@ Pressing Windows key + Tab key invoked Flip 3D, and continually pressing Windows
 - This program is NOT TESTED on computers with multiple monitors and may not work properly
 - This program is also NOT TESTED with multiple desktops
 # To-dos:
-- Finishing animation
-- Improving performance
-- Finding new ways of getting window thumbnails, as some programs use GPU rendering, meaning that they will show up blank.
+- Finish animation
+- Improve performance if able
+- Find new ways of getting window thumbnails, as some programs use GPU rendering, meaning that they will show up blank.
 # Contributing to this project
 Suggestions are welcomed.
 # License
