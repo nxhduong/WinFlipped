@@ -32,6 +32,9 @@
   <ItemGroup>
     <PackageReference Include="ScreenCapturer" Version="3.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageReference Include="VirtualDesktop" Version="5.0.5" />
+    <PackageReference Include="VirtualDesktop.Standard" Version="1.0.1" />
+    <PackageReference Include="VirtualDesktop.WPF" Version="5.0.5" />
   </ItemGroup>
 
   <ItemGroup>

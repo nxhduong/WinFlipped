@@ -41,7 +41,7 @@ namespace WinFlipped.Helpers
             int height = (int)FullPrimaryScreenHeight;
             int width = (int)FullPrimaryScreenWidth;
             Bitmap bmp = new(width, height);
-            Graphics.FromImage(bmp).CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, new System.Drawing.Size
+            Graphics.FromImage(bmp).CopyFromScreen(Point.Empty, Point.Empty, new Size
             {
                 Width = width,
                 Height = height
@@ -62,7 +62,7 @@ namespace WinFlipped.Helpers
             var result = new Bitmap(bounds.Width, bounds.Height);
             using (var graphics = Graphics.FromImage(result))
             {
-                graphics.CopyFromScreen(new System.Drawing.Point(bounds.Left, bounds.Top), System.Drawing.Point.Empty, bounds.Size);
+                graphics.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
             }
             return result;
         }

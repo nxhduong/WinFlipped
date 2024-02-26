@@ -4,8 +4,8 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
-using WinFlipped.Helpers;
 using System.ComponentModel;
+using WinFlipped.Helpers;
 
 namespace WinFlipped
 {
@@ -35,7 +35,7 @@ namespace WinFlipped
                     Label title = new()
                     {
                         // Window handles are for debugging purposes
-                        Content = MainWindowTitle + "| Handle: " + MainWindowHandle,
+                        Content = MainWindowTitle + "|Handle " + MainWindowHandle,
                         Name = '_' + MainWindowHandle.ToString(),
                         Foreground = new BrushConverter().ConvertFromString("#FFFFFF") as Brush,
                     };

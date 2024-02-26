@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using SharpDX;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
+using WindowsDesktop;
 
 namespace WinFlipped.Helpers
 {
@@ -29,6 +31,10 @@ namespace WinFlipped.Helpers
         [LibraryImport("user32.dll")]
         private static partial nint GetShellWindow();
 
+        [LibraryImport("dwmapi.dll")]
+        [Obsolete]
+        private static partial nint DwmGetWindowAttribute(nint hWnd, nint dwAttribute, out nint pvAttribute, nint cbAttribute);
+
         /// <summary>Returns a dictionary that contains the handle and title of all the open windows.</summary>
         /// <returns>A dictionary that contains the handle and title of all the open windows.</returns>
         /// 
@@ -40,7 +46,7 @@ namespace WinFlipped.Helpers
             EnumWindows(delegate (nint hWnd, int lParam)
             {
                 int titleLength = GetWindowTextLength(hWnd);
-                if (hWnd == shellWindow || !IsWindowVisible(hWnd) || titleLength == 0)
+                if (hWnd == shellWindow || !IsWindowVisible(hWnd) || titleLength == 0 || VirtualDesktop.FromHwnd(hWnd) is null)
                 {
                     return true;
                 }
@@ -55,5 +61,20 @@ namespace WinFlipped.Helpers
 
             return windows.AsEnumerable();
         }
+
+        // https://stackoverflow.com/questions/32149880/how-to-identify-windows-10-background-store-processes-that-have-non-displayed-wi
+        /*
+        public static bool IsInvisibleWin10BackgroundAppWindow(nint hWnd)
+        {
+            int CloakedVal = 0;
+            nint hRes = DwmGetWindowAttribute(hWnd, DWMWA_CLOAKED (0x1 | 0x2 | 0x4)?, out CloakedVal, Marshal.SizeOf(CloakedVal));
+
+            if (hRes != 0)
+            {
+                return false;
+            }
+            return CloakedVal != 0;
+        }
+        */
     }
 }
