@@ -62,10 +62,10 @@ namespace WinFlipped
                             System.Drawing.Icon.ExtractAssociatedIcon(
                                 Process.GetProcessById(
                                     (int)MainWindowHandle).MainModule?.FileName ?? ""
-                                    )?.Handle ?? 0,
+                                )?.Handle ?? 0,
                             Int32Rect.Empty,
                             BitmapSizeOptions.FromEmptyOptions()
-                            );
+                        );
                     } 
                     catch(Win32Exception ex)
                     {

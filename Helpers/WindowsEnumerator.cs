@@ -8,11 +8,11 @@ namespace WinFlipped.Helpers
 {
     public partial class WindowsEnumerator
     {
-        private delegate bool EnumWindowsProc(nint hWnd, int lParam);
+        private delegate bool EnumWindowsCallback(nint hWnd, int lParam);
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
+        private static partial bool EnumWindows(EnumWindowsCallback enumFunc, int lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetWindowText(nint hWnd, StringBuilder lpString, int nMaxCount);
@@ -63,7 +63,7 @@ namespace WinFlipped.Helpers
         }
 
         // https://stackoverflow.com/questions/32149880/how-to-identify-windows-10-background-store-processes-that-have-non-displayed-wi
-        /*
+        /* DWMWA_CLOAKED?
         public static bool IsInvisibleWin10BackgroundAppWindow(nint hWnd)
         {
             int CloakedVal = 0;

@@ -11,9 +11,7 @@ namespace WinFlipped.Helpers
         private int _Right = Right;
         private int _Bottom = Bottom;
 
-        public RECT(RECT Rectangle) : this(Rectangle.Left, Rectangle.Top, Rectangle.Right, Rectangle.Bottom)
-        {
-        }
+        public RECT(RECT Rectangle) : this(Rectangle.Left, Rectangle.Top, Rectangle.Right, Rectangle.Bottom) {}
 
         public int X
         {
@@ -106,7 +104,8 @@ namespace WinFlipped.Helpers
             return Rectangle.Left == _Left && Rectangle.Top == _Top && Rectangle.Right == _Right && Rectangle.Bottom == _Bottom;
         }
 
-        #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        #pragma warning disable CS8765 
+        // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         public override readonly bool Equals(object Object)
         #pragma warning restore CS8765
         {

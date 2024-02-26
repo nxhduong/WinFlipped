@@ -10,9 +10,12 @@ namespace WinFlipped.Helpers
         public static BitmapImage ToBitmapImage(this Bitmap bitmap)
         {
             using MemoryStream memory = new();
+
             bitmap.Save(memory, ImageFormat.Bmp);
             memory.Position = 0;
+
             BitmapImage bitmapimage = new();
+            
             bitmapimage.BeginInit();
             bitmapimage.StreamSource = memory;
             bitmapimage.CacheOption = BitmapCacheOption.OnLoad;

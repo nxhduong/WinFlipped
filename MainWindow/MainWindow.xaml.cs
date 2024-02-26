@@ -6,12 +6,12 @@ namespace WinFlipped
 {
     public partial class MainWindow : Window
     {
-        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows; // SortedDictionary?
+        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows;
         // Rough approximation of maximum number of windows that this program can show
         private readonly int WINDOWS_SHOW_LIMIT = (int)Math.Min(
-                SystemParameters.FullPrimaryScreenHeight / 100,
-                SystemParameters.FullPrimaryScreenWidth / 200
-                );
+            SystemParameters.FullPrimaryScreenHeight / 100,
+            SystemParameters.FullPrimaryScreenWidth / 200
+        );
 
         [LibraryImport("user32.dll")]
         private static partial nint ShowWindow(nint hWnd, int nCmdShow);
@@ -36,6 +36,7 @@ namespace WinFlipped
         public MainWindow()
         {
             InitializeComponent();
+            
             KeyUp += new KeyEventHandler(MainWindow_KeyUp);
             Loaded += new RoutedEventHandler(MainWindow_Loaded);
         }
