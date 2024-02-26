@@ -1,8 +1,8 @@
-﻿using System.Drawing;
+﻿using Windows.Graphics.Capture;
+using System.Drawing;
 using System.Runtime.InteropServices;
-using Windows.Graphics.Capture;
-using static System.Windows.SystemParameters;
 using System.Drawing.Imaging;
+using static System.Windows.SystemParameters;
 
 namespace WinFlipped.Helpers
 {

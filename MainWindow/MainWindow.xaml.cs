@@ -1,17 +1,17 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using System.Runtime.InteropServices;
 
 namespace WinFlipped
 {
     public partial class MainWindow : Window
     {
-        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows;
         // Rough approximation of maximum number of windows that this program can show
         private readonly int WINDOWS_SHOW_LIMIT = (int)Math.Min(
             SystemParameters.FullPrimaryScreenHeight / 100,
             SystemParameters.FullPrimaryScreenWidth / 200
         );
+        private IEnumerable<(nint MainWindowHandle, string MainWindowTitle)>? OpenWindows;
 
         [LibraryImport("user32.dll")]
         private static partial nint ShowWindow(nint hWnd, int nCmdShow);
