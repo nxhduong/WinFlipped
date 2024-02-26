@@ -91,7 +91,7 @@ namespace WinFlipped.Helpers
             return [rect.Right - rect.Left, rect.Bottom - rect.Top];
         }
 
-        public static Bitmap BitBltCaptureWindow(nint hWnd)
+        public static Bitmap BitBltCaptureScreen()
         {
             Size sz = new((int)PrimaryScreenWidth, (int)PrimaryScreenHeight);
             nint hDesk = GetDesktopWindow();
@@ -107,7 +107,7 @@ namespace WinFlipped.Helpers
             DeleteObject(hBmp);
             DeleteDC(hDest);
             ReleaseDC(hDesk, hSrce);
-            
+
             return bmp;
         }
 
