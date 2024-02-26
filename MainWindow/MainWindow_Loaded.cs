@@ -74,7 +74,7 @@ namespace WinFlipped
                     }
                     catch(ArgumentException ex)
                     {
-                        // When casting failed
+                        // When casting fails
                         Trace.TraceError(ex.Message);
                     }
 
