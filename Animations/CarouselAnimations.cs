@@ -13,13 +13,14 @@ namespace WinFlipped.Animations
 {
     internal class FadeAnimation : DoubleAnimation
     {
-        public FadeAnimation(bool fadeOut)
+        public FadeAnimation(bool fadeOut, Action? callback = null)
         {
-            Duration = new Duration(TimeSpan.FromMilliseconds(1000));
+            Duration = new Duration(TimeSpan.FromMilliseconds(200));
             From = fadeOut ? 1.0 : 0.0;
             To = fadeOut ? 0.0 : 1.0;
             AutoReverse = false;
             RepeatBehavior = new RepeatBehavior(1);
+            Completed += (sender, eventArgs) => { if (callback is not null) callback(); } ;
         }
     }
 
@@ -35,29 +36,26 @@ namespace WinFlipped.Animations
         {
             TranslateTransform trans = new();
             target.RenderTransform = trans;
+            var hAnim = new DoubleAnimation(Canvas.GetLeft(target), Canvas.GetLeft(target) + hDist, TimeSpan.FromMilliseconds(100));
+            var vAnim = new DoubleAnimation(Canvas.GetTop(target), Canvas.GetTop(target) + vDist, TimeSpan.FromMilliseconds(100));
+
+            hAnim.Completed += (sender, eventArgs) => Canvas.SetTop(target, Canvas.GetTop(target) + vDist);
+            vAnim.Completed += (sender, eventArgs) => Canvas.SetLeft(target, Canvas.GetLeft(target) + hDist);
 
             trans.BeginAnimation(
-                TranslateTransform.XProperty, 
-                new DoubleAnimation(Canvas.GetLeft(target), Canvas.GetLeft(target) + hDist, TimeSpan.FromMilliseconds(500))
-                {
-                    IsAdditive = true
-                }
+                TranslateTransform.XProperty,
+                hAnim
             );
             trans.BeginAnimation(
-                TranslateTransform.YProperty,   
-                new DoubleAnimation(Canvas.GetTop(target), Canvas.GetTop(target) + vDist, TimeSpan.FromMilliseconds(500))
-                {
-                    IsAdditive = true
-                }
+                TranslateTransform.YProperty,
+                vAnim
             );
-
-            Trace.WriteLine(target.Name + Canvas.GetTop(target) + ' ' + Canvas.GetLeft(target));
         }
 
         public static void ScaleBy(this Image target, double scale)
         {
-            target.BeginAnimation(Image.HeightProperty, new DoubleAnimation(target.Height, target.Height * scale, TimeSpan.FromMilliseconds(500)));
-            target.BeginAnimation(Image.WidthProperty, new DoubleAnimation(target.Width, target.Width * scale, TimeSpan.FromMilliseconds(500)));
+            target.BeginAnimation(Image.HeightProperty, new DoubleAnimation(target.Height, target.Height * scale, TimeSpan.FromMilliseconds(100)));
+            target.BeginAnimation(Image.WidthProperty, new DoubleAnimation(target.Width, target.Width * scale, TimeSpan.FromMilliseconds(100)));
         }
     }
 }

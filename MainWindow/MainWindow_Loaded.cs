@@ -36,8 +36,8 @@ namespace WinFlipped
                 ShowWindow(mainWindowHandle, 2);
 
                 // Change position of subsequent window
-                imageLeft += 100;
-                imageTop += 50;
+                imageLeft += 10;
+                imageTop += 10;
                 scale += 0.1;
                 zIndex++;
             }
