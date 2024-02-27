@@ -7,7 +7,7 @@ using WindowsDesktop;
 
 namespace WinFlipped.Helpers
 {
-    public partial class WindowsEnumerator
+    internal partial class WindowsEnumerator
     {
         private delegate bool EnumWindowsCallback(nint hWnd, int lParam);
 
@@ -37,7 +37,7 @@ namespace WinFlipped.Helpers
         private static partial nint DwmGetWindowAttribute(nint hWnd, nint dwAttribute, out nint pvAttribute, nint cbAttribute);
 
         [LibraryImport("user32.dll")]
-        private static partial nint ShowWindow(nint hWnd, int nCmdShow);
+        public static partial nint ShowWindow(nint hWnd, int nCmdShow);
 
         [LibraryImport("user32.dll")]
         private static partial nint SwitchToThisWindow(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool fUnknown);

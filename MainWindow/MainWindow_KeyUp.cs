@@ -70,7 +70,7 @@ namespace WinFlipped
             {
                 // Show selected window, and quit program
                 Application.Current.Shutdown();
-                ShowWindow(OpenWindows?.Last().MainWindowHandle ?? 0, 1);
+                WindowsEnumerator.ShowWindow(OpenWindows?.Last().MainWindowHandle ?? 0, 1);
                 OpenWindows = null;
             }
             else

@@ -27,6 +27,7 @@ Pressing Windows key + Tab key invoked Flip 3D, and continually pressing Windows
 - The program can also be built from source
 - You can assign a key combination to launch this program, using tools like *AutoHotKey*.
 - Press `TAB` to cycle through windows, and `ENTER` to switch to the selected one.
+- Press any other key to exit
 # Notes
 - This program is NOT TESTED on computers with multiple monitors and may not work properly
 - This program is also NOT TESTED with multiple desktops

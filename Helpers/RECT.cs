@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WinFlipped.Helpers
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT(int Left, int Top, int Right, int Bottom)
+    internal struct RECT(int Left, int Top, int Right, int Bottom)
     {
         private int _Left = Left;
         private int _Top = Top;

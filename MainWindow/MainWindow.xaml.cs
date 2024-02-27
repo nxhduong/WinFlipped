@@ -14,9 +14,6 @@ namespace WinFlipped
         );
         private IEnumerable<(nint MainWindowHandle, string MainWindowTitle, Bitmap MainWindowScreenshot)>? OpenWindows;
 
-        [LibraryImport("user32.dll")]
-        private static partial nint ShowWindow(nint hWnd, int nCmdShow);
-
         public MainWindow()
         {
             InitializeComponent();

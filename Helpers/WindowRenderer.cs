@@ -47,7 +47,7 @@ namespace WinFlipped.Helpers
                 Height = 100 * scale,
                 Width = 150 * scale,
                 Name = "_" + windowHandle.ToString(),
-                Source = windowScreenshot.MergeBitmapSideBySide(icon).ToBitmapImage(),
+                Source = windowScreenshot.MergeBitmapSideBySide(icon, 300, 200, 50, 50).ToBitmapImage(),
                 Opacity = hidden ? 0 : 1
             };
 
