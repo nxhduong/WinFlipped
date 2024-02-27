@@ -1,16 +1,16 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Controls;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.Windows;
+using System.Runtime.InteropServices;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace WinFlipped.Helpers
 {
-    internal static class WindowRenderer
+    internal static partial class WindowRenderer
     {
+        [LibraryImport("user32.dll")]
+        private static partial uint GetWindowThreadProcessId(nint hWnd, out uint processId);
+
         /// <summary>
         /// Add a window, its title, and its icon to the canvas
         /// </summary>
@@ -23,6 +23,8 @@ namespace WinFlipped.Helpers
             Bitmap windowScreenshot, 
             int top, 
             int left, 
+            double scale,
+            int zIndex,
             bool hidden = false
         )
         {
@@ -35,58 +37,31 @@ namespace WinFlipped.Helpers
                 Opacity = hidden? 0 : 1
             };
 
+            GetWindowThreadProcessId(windowHandle, out uint pId);
+            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(
+                    Process.GetProcessById((int)pId).MainModule?.FileName ?? ""
+            )?.ToBitmap()?? new (0, 0);
+
             Image image = new()
             {
-                Height = 100,
-                Width = 200,
+                Height = 100 * scale,
+                Width = 150 * scale,
                 Name = "_" + windowHandle.ToString(),
-                Source = windowScreenshot.ToBitmapImage(),
+                Source = windowScreenshot.MergeBitmapSideBySide(icon).ToBitmapImage(),
                 Opacity = hidden ? 0 : 1
             };
-
-            Image icon = new()
-            {
-                Height = 50,
-                Width = 50,
-                Name = "_" + windowHandle.ToString(),
-                Opacity = hidden ? 0 : 1
-            };
-
-            try
-            {
-                icon.Source = Imaging.CreateBitmapSourceFromHIcon(
-                    System.Drawing.Icon.ExtractAssociatedIcon(
-                        Process.GetProcessById(
-                            (int)windowHandle).MainModule?.FileName ?? ""
-                        )?.Handle ?? 0,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions()
-                );
-            }
-            catch (Win32Exception ex)
-            {
-                // When getting process results in 'Access is denied' error
-                Trace.TraceError(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                // When casting fails
-                Trace.TraceError(ex.Message);
-            }
 
             canvas.Children.Add(image);
             Canvas.SetTop(image, top);
             Canvas.SetLeft(image, left);
-
-            canvas.Children.Add(icon);
-            Canvas.SetTop(icon, top - 10);
-            Canvas.SetLeft(icon, left);
+            Canvas.SetZIndex(image, zIndex);
 
             canvas.Children.Add(title);
-            Canvas.SetTop(title, top - 25);
+            Canvas.SetTop(title, top - 10);
             Canvas.SetLeft(title, left);
+            Canvas.SetZIndex(title, zIndex);
 
-            return (title, image, icon);
+            return (title, image, image);
         }
     }
 }

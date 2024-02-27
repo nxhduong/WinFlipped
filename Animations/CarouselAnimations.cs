@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace WinFlipped.Animations
     {
         public FadeAnimation(bool fadeOut)
         {
-            Duration = new Duration(TimeSpan.FromMilliseconds(500));
+            Duration = new Duration(TimeSpan.FromMilliseconds(1000));
             From = fadeOut ? 1.0 : 0.0;
             To = fadeOut ? 0.0 : 1.0;
             AutoReverse = false;
@@ -38,14 +39,25 @@ namespace WinFlipped.Animations
             trans.BeginAnimation(
                 TranslateTransform.XProperty, 
                 new DoubleAnimation(Canvas.GetLeft(target), Canvas.GetLeft(target) + hDist, TimeSpan.FromMilliseconds(500))
+                {
+                    IsAdditive = true
+                }
             );
             trans.BeginAnimation(
                 TranslateTransform.YProperty,   
                 new DoubleAnimation(Canvas.GetTop(target), Canvas.GetTop(target) + vDist, TimeSpan.FromMilliseconds(500))
+                {
+                    IsAdditive = true
+                }
             );
 
-            Canvas.SetLeft(target, Canvas.GetLeft(target) + hDist);
-            Canvas.SetTop(target, Canvas.GetTop(target) + vDist);
+            Trace.WriteLine(target.Name + Canvas.GetTop(target) + ' ' + Canvas.GetLeft(target));
+        }
+
+        public static void ScaleBy(this Image target, double scale)
+        {
+            target.BeginAnimation(Image.HeightProperty, new DoubleAnimation(target.Height, target.Height * scale, TimeSpan.FromMilliseconds(500)));
+            target.BeginAnimation(Image.WidthProperty, new DoubleAnimation(target.Width, target.Width * scale, TimeSpan.FromMilliseconds(500)));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WinFlipped.Animations;
@@ -16,7 +17,11 @@ namespace WinFlipped
                 // Cycle through windows
                 (nint handle, string title, Bitmap screenshot) hiddenWindow;
                                                                     
-                if (OpenWindows.Count() < WINDOWS_SHOW_LIMIT)
+                if (OpenWindows.Count() < 2)
+                {
+                    return;
+                }
+                else if (OpenWindows.Count() < WINDOWS_SHOW_LIMIT)
                 {
                     hiddenWindow = OpenWindows.Last();
                 } 
@@ -24,24 +29,6 @@ namespace WinFlipped
                 {
                     hiddenWindow = OpenWindows.SkipLast(WINDOWS_SHOW_LIMIT).Last();
                 }
-
-                // Fade out animation
-                var lastLabel = canvas
-                    .Children.OfType<Label>()
-                    .Where((control) => control.Name == '_' + OpenWindows.Last().MainWindowHandle.ToString())
-                    .Last();
-                lastLabel.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: true));
-                canvas.Children.Remove(lastLabel);
-
-                canvas
-                    .Children.OfType<Image>()
-                    .Where((control) => control.Name == '_' + OpenWindows.Last().MainWindowHandle.ToString())
-                    .ToList().ForEach(i => {
-                        i.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: true));
-                        canvas.Children.Remove(i);
-                    });
-
-                OpenWindows = OpenWindows.Prepend(OpenWindows.Last()).SkipLast(1);
 
                 // Move animation
                 foreach (Label label in canvas.Children.OfType<Label>())
@@ -52,15 +39,33 @@ namespace WinFlipped
                 foreach (Image image in canvas.Children.OfType<Image>())
                 {
                     image.MoveBy(50, 50);
-                }   
+                    Canvas.SetZIndex(image, Canvas.GetZIndex(image) + 1);
+                    image.ScaleBy(1.1);
+                }
+
+                // Fade out animation
+                var lastLabel = canvas
+                    .Children.OfType<Label>()
+                    .Where((control) => control.Name == '_' + OpenWindows.Last().MainWindowHandle.ToString())
+                    .Last();
+                lastLabel.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: true));
+                canvas.Children.Remove(lastLabel);
+
+                var lastImage = canvas
+                    .Children.OfType<Image>()
+                    .Where((control) => control.Name == '_' + OpenWindows.Last().MainWindowHandle.ToString()).Last();
+                lastImage.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: true));
+                canvas.Children.Remove(lastImage);
 
                 // Add hidden window
-                (Label title, Image screenshot, Image icon) = canvas.DrawWindow(hiddenWindow.handle, hiddenWindow.title, hiddenWindow.screenshot, 100, 100, hidden: true);
+                (Label title, Image screenshot, Image icon) = canvas.DrawWindow(hiddenWindow.handle, hiddenWindow.title, hiddenWindow.screenshot, 50, 50, 1, 1, hidden: true);
 
                 // Fade in animation
                 title.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
                 screenshot.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
                 icon.BeginAnimation(OpacityProperty, new FadeAnimation(fadeOut: false));
+
+                OpenWindows = OpenWindows.Prepend(OpenWindows.Last()).SkipLast(1);
             }
             else if (eventArgs.Key == Key.Enter)
             {
@@ -68,6 +73,10 @@ namespace WinFlipped
                 Application.Current.Shutdown();
                 ShowWindow(OpenWindows?.Last().MainWindowHandle ?? 0, 1);
                 OpenWindows = null;
+            }
+            else
+            {
+                Application.Current.Shutdown();
             }
         }
     }

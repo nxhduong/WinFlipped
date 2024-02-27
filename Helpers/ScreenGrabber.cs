@@ -1,5 +1,4 @@
-﻿using Windows.Graphics.Capture;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using static System.Windows.SystemParameters;
@@ -19,7 +18,17 @@ namespace WinFlipped.Helpers
 
         [LibraryImport("gdi32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool BitBlt(nint hDcDest, int xDest, int yDest, int wDest, int hDest, nint hDcSource, int xSrc, int ySrc, CopyPixelOperation rop);
+        private static partial bool BitBlt(
+            nint hDcDest, 
+            int xDest, 
+            int yDest, 
+            int wDest, 
+            int hDest, 
+            nint hDcSource, 
+            int xSrc, 
+            int ySrc, 
+            CopyPixelOperation rop
+        );
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -58,7 +67,7 @@ namespace WinFlipped.Helpers
                 Width = width,
                 Height = height
             });
-
+            
             return bmp;
         }
 
@@ -83,7 +92,6 @@ namespace WinFlipped.Helpers
             {
                 graphics.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
             }
-
             return result;
         }
 
@@ -111,7 +119,7 @@ namespace WinFlipped.Helpers
             nint hBmp = CreateCompatibleBitmap(hSrce, sz.Width, sz.Height);
             nint hOldBmp = SelectObject(hDest, hBmp);
 
-            _ = BitBlt(hDest, 0, 0, sz.Width, sz.Height, hSrce, 0, 0, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+            BitBlt(hDest, 0, 0, sz.Width, sz.Height, hSrce, 0, 0, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
             Bitmap bmp = Image.FromHbitmap(hBmp);
 
             SelectObject(hDest, hOldBmp);

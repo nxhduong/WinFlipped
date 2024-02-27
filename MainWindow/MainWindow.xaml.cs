@@ -9,8 +9,8 @@ namespace WinFlipped
     {
         // Rough approximation of maximum number of windows that this program can show
         private readonly int WINDOWS_SHOW_LIMIT = (int)Math.Min(
-            SystemParameters.FullPrimaryScreenHeight / 100,
-            SystemParameters.FullPrimaryScreenWidth / 200
+            SystemParameters.FullPrimaryScreenHeight / 200,
+            SystemParameters.FullPrimaryScreenWidth / 300
         );
         private IEnumerable<(nint MainWindowHandle, string MainWindowTitle, Bitmap MainWindowScreenshot)>? OpenWindows;
 

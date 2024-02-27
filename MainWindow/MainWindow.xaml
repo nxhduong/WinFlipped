@@ -12,9 +12,8 @@
         Height="auto" 
         Width="auto">
     <Window.Background>
-        <SolidColorBrush Opacity="0.25" Color="Black"></SolidColorBrush>
+        <SolidColorBrush Opacity="0.5" Color="Black"></SolidColorBrush>
     </Window.Background>
     <Canvas x:Name="canvas">
-        
     </Canvas>
 </Window>

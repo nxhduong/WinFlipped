@@ -11,6 +11,8 @@ namespace WinFlipped
         {
             var imageTop = 100;
             var imageLeft = 100;
+            var scale = 1.0;
+            var zIndex = 1;
             OpenWindows = WindowsEnumerator.GetOpenWindows().Where(win => win.MainWindowHandle != new WindowInteropHelper(this).Handle);
 
             canvas.Children.Clear();
@@ -26,7 +28,9 @@ namespace WinFlipped
                 BringWindowToTop(mainWindowHandle);
                 SwitchToThisWindow(mainWindowHandle, true);
 
-                canvas.DrawWindow(mainWindowHandle, mainWindowTitle, mainWindowScreenshot, imageTop, imageLeft);
+                Thread.Sleep(800);
+
+                canvas.DrawWindow(mainWindowHandle, mainWindowTitle, mainWindowScreenshot, imageTop, imageLeft, scale, zIndex);
 
                 // Minimize window
                 ShowWindow(mainWindowHandle, 2);
@@ -34,8 +38,12 @@ namespace WinFlipped
                 // Change position of subsequent window
                 imageLeft += 100;
                 imageTop += 50;
+                scale += 0.1;
+                zIndex++;
             }
+
             Show();
+            Activate();
         }
     }
 }
