@@ -17,23 +17,6 @@ namespace WinFlipped
         [LibraryImport("user32.dll")]
         private static partial nint ShowWindow(nint hWnd, int nCmdShow);
 
-        [LibraryImport("user32.dll")]
-        private static partial nint SwitchToThisWindow(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool fUnknown);
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool SetForegroundWindow(nint hWnd);
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int x, int y, int cX, int cY, uint uFlags);
-
-        [LibraryImport("user32.dll")]
-        private static partial nint BringWindowToTop(nint hWnd);
-
-        [LibraryImport("user32.dll")]
-        private static partial nint IsIconic(nint hWnd);
-
         public MainWindow()
         {
             InitializeComponent();

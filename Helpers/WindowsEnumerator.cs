@@ -36,6 +36,26 @@ namespace WinFlipped.Helpers
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Currently not needed")]
         private static partial nint DwmGetWindowAttribute(nint hWnd, nint dwAttribute, out nint pvAttribute, nint cbAttribute);
 
+        [LibraryImport("user32.dll")]
+        private static partial nint ShowWindow(nint hWnd, int nCmdShow);
+
+        [LibraryImport("user32.dll")]
+        private static partial nint SwitchToThisWindow(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool fUnknown);
+
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool SetForegroundWindow(nint hWnd);
+
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int x, int y, int cX, int cY, uint uFlags);
+
+        [LibraryImport("user32.dll")]
+        private static partial nint BringWindowToTop(nint hWnd);
+
+        [LibraryImport("user32.dll")]
+        private static partial nint IsIconic(nint hWnd);
+
         /// <summary>
         /// Returns an IEnumerable that contains the handle, title and screenshots of all the open windows.
         /// </summary>
@@ -55,7 +75,20 @@ namespace WinFlipped.Helpers
                 StringBuilder builder = new(titleLength);
                 _ = GetWindowText(hWnd, builder, titleLength + 1);
 
+                // Redundancy to ensure that the window is shown
+                ShowWindow(hWnd, IsIconic(hWnd) != 0 ? 9 : 5);
+                SetForegroundWindow(hWnd);
+                SetWindowPos(hWnd, -1, 0, 0, 0, 0, 0x0040 | 0x0001 | 0x0002);
+                BringWindowToTop(hWnd);
+                SwitchToThisWindow(hWnd, true);
+
+                Thread.Sleep(800);
+
                 windows.Add((hWnd, builder.ToString(), ScreenGrabber.CaptureWindow(hWnd)));
+
+                // Minimize window
+                ShowWindow(hWnd, 2);
+
                 return true;
 
             }, 0);
